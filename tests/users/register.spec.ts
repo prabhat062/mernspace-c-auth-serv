@@ -37,7 +37,7 @@ describe('POST /auth/register', () => {
             )
         })
 
-        it('should persist data', async () => {
+        it('should persist the user in database', async () => {
             //Arrange
             const userData = {
                 firstName: 'Prabhat',
