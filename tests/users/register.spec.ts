@@ -3,6 +3,7 @@ import app from '../../src/app'
 import request from 'supertest'
 import { AppDataSource } from '../../src/config/data-source'
 import { truncateTables } from '../utils'
+import { User } from '../../src/entity/User'
 
 describe('POST /auth/register', () => {
     let connection: DataSource
@@ -65,13 +66,35 @@ describe('POST /auth/register', () => {
             //Act
             await request(app).post('/auth/register').send(userData)
 
-            const userRepository = connection.getRepository('User')
+            const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
             //Assert
             expect(users).toHaveLength(1)
             expect(users[0].firstName).toBe(userData.firstName)
             expect(users[0].lastName).toBe(userData.lastName)
             expect(users[0].email).toBe(userData.email)
+        })
+
+        it('should return an id of the created user', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Prabhat',
+                lastName: 'Mishra',
+                email: 'prabhat1284@gmail.com',
+                password: 'password',
+            }
+            // Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+
+            // Assert
+            expect(response.body).toHaveProperty('id')
+            const repository = connection.getRepository(User)
+            const users = await repository.find()
+            expect((response.body as Record<string, string>).id).toBe(
+                users[0].id,
+            )
         })
     })
 
