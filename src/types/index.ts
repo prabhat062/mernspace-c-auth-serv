@@ -22,3 +22,12 @@ export interface AuthRequest extends Request {
 export interface IRefreshPayload {
     id: string
 }
+
+export interface ITenant {
+    name: string
+    address: string
+}
+
+export interface TenantUserRequest extends Request {
+    body: ITenant
+}
