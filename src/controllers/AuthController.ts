@@ -8,6 +8,7 @@ import { TokenService } from '../services/TokenService'
 import createHttpError from 'http-errors'
 import { CredentialService } from '../services/CredentialService'
 import { User } from '../entity/User'
+import { Roles } from '../constants'
 
 export class AuthController {
     constructor(
@@ -83,6 +84,7 @@ export class AuthController {
                 lastName,
                 email,
                 password,
+                role: Roles.CUSTOMER,
             })
             this.logger.info('User registered successfully', {
                 userId: user.id,
