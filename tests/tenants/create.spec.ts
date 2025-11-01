@@ -84,5 +84,28 @@ describe('POST /tenants', () => {
 
             expect(tenants).toHaveLength(0)
         })
+
+        it('should return 403 if user is not authorized to create tenant', async () => {
+            const tenantData = {
+                name: 'tenant_name',
+                address: 'tenant_adress',
+            }
+
+            const managerToken = jwks.token({
+                sub: '1',
+                role: Roles.MANAGER,
+            })
+
+            const response = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${managerToken}`])
+                .send(tenantData)
+
+            expect(response.statusCode).toBe(403)
+            const tenantRepository = connection.getRepository(Tenant)
+            const tenants = await tenantRepository.find()
+
+            expect(tenants).toHaveLength(0)
+        })
     })
 })
