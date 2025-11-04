@@ -12,9 +12,11 @@
         "test": "cross-env DOTENV_CONFIG_DEBUG=false jest --runInBand",
         "prepare": "husky",
         "start": "ts-node src/index.ts",
-        "migration:generate": "typeorm-ts-node-commonjs migration:generate",
-        "migration:run": "typeorm-ts-node-commonjs migration:run",
-        "migration:create": "typeorm-ts-node-commonjs migration:create"
+        "migration:generate": "typeorm-ts-node-commonjs migration:generate src/migration/%npm_config_name% -d src/config/data-source.ts",
+        "migration:run": "typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts",
+        "migration:create": "typeorm-ts-node-commonjs migration:create src/migration/%npm_config_name%",
+        "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/data-source.ts",
+        "migration:show": "typeorm-ts-node-commonjs migration:show -d src/config/data-source.ts"
     },
     "author": "Prabhat <Prabhat1284@gmail.com>",
     "license": "ISC",
