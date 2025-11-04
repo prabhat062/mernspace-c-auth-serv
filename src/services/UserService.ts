@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm'
+import { DeepPartial, Repository } from 'typeorm'
 import { User } from '../entity/User'
 import { LimitedUserData, UserData } from '../types'
 import createHttpError from 'http-errors'
@@ -6,7 +6,14 @@ import bcrypt from 'bcrypt'
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
-    async create({ firstName, lastName, email, password, role }: UserData) {
+    async create({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+        tenantId,
+    }: UserData) {
         const user = await this.userRepository.findOne({
             where: { email: email },
         })
@@ -16,14 +23,16 @@ export class UserService {
         }
         const saltRounds = 10
         const hashedPassword = await bcrypt.hash(password, saltRounds)
+        const userData: DeepPartial<User> = {
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            role,
+            ...(tenantId ? { tenant: { id: tenantId } } : {}),
+        }
         try {
-            return await this.userRepository.save({
-                firstName,
-                lastName,
-                email,
-                password: hashedPassword,
-                role,
-            })
+            return await this.userRepository.save(userData)
         } catch {
             const error = createHttpError(
                 500,

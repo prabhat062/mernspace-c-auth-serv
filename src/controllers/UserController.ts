@@ -2,7 +2,6 @@ import { NextFunction, Response, Request } from 'express'
 import { UserService } from '../services/UserService'
 import { Logger } from 'winston'
 import { CreateUserRequest, UpdateUserRequest } from '../types'
-import { Roles } from '../constants'
 import createHttpError from 'http-errors'
 import { validationResult } from 'express-validator'
 
@@ -16,7 +15,8 @@ export class UserController {
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() })
         }
-        const { firstName, lastName, email, password } = req.body
+        const { firstName, lastName, email, password, tenantId, role } =
+            req.body
         this.logger.debug('Request for creating a user', req.body)
         try {
             const user = await this.userService.create({
@@ -24,7 +24,8 @@ export class UserController {
                 lastName,
                 email,
                 password,
-                role: Roles.MANAGER,
+                role,
+                tenantId,
             })
             this.logger.info('user has been created', { id: user.id })
             res.status(201).json({ id: user.id })
