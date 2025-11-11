@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { Config } from '.'
+import path from 'path'
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: Config.DB_HOST!,
@@ -10,7 +11,7 @@ export const AppDataSource = new DataSource({
     database: Config.DB_NAME!,
     synchronize: false,
     logging: false,
-    entities: ['src/entity/*.ts'],
-    migrations: ['src/migration/*.ts'],
+    entities: [path.join(__dirname, '../entity/*.{ts,js}')],
+    migrations: [path.join(__dirname, '../migration/*.{ts,js}')],
     subscribers: [],
 })
