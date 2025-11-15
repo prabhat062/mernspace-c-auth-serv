@@ -24,5 +24,5 @@ COPY --from=builder /app/dist ./
 
 EXPOSE 5555
 
-CMD ["node","dist/server.js"]
+CMD ["node","server.js"]
 
